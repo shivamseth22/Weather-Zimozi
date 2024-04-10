@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import GoogleMapReact from 'google-map-react';
 import Marker from './Marker'; // Create Marker component to show AQI
-import { centroids } from './centroids'; // Import centroids data
+import { centroids } from './Centroids'; // Import centroids data
 
 const Map = () => {
   const [aqiData, setAqiData] = useState([]);
