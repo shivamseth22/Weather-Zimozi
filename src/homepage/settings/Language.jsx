@@ -1,5 +1,5 @@
-// Language.js
 import React from 'react';
+import { Select, MenuItem } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 const Language = () => {
@@ -10,10 +10,15 @@ const Language = () => {
   };
 
   return (
-    <div>
-      <button onClick={() => changeLanguage('en')}>English</button>
-      <button onClick={() => changeLanguage('es')}>Spanish</button>
-    </div>
+    <Select
+    sx={{width:"300px" , backgroundColor:'white'}}
+      value={i18n.language}
+      onChange={(event) => changeLanguage(event.target.value)}
+      fullWidth
+    >
+      <MenuItem value="en">English</MenuItem>
+      <MenuItem value="es">Spanish</MenuItem>
+    </Select>
   );
 };
 

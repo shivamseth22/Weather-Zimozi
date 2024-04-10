@@ -89,7 +89,7 @@ const Sidebar = () => {
             <ListItem
               button
               onClick={() => {
-                navigate('/');
+                navigate('/favourite-city');
                 handleToggleDrawer();
               }}
             >
@@ -108,7 +108,7 @@ const Sidebar = () => {
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
-              <ListItemText primary={t('Calendar')} /> {/* Translate text */}
+              <ListItemText primary={t('ForeCast')} /> {/* Translate text */}
             </ListItem>
             <ListItem
               button

@@ -8,7 +8,8 @@ import Login from "./homepage/auth/Login";
 import SignUp from "./homepage/auth/SignUp";
 import Map from "./homepage/map/Map";
 import Setting from "./homepage/settings/setting";
-import Forecast from "./homepage/calender/Forecast";
+import Forecast from "./homepage/forecast/Forecast";
+import FavLocation from "./homepage/locations/FavLocation";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./homepage/i18n";
 
@@ -44,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: "/calender",
         element: <Forecast/>,
+      },
+      {
+        path: "/favourite-city",
+        element: <FavLocation/>,
       },
     ]
   },

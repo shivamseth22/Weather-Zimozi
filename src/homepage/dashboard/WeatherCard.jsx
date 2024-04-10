@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, TextField, Grid, IconButton, InputAdornment, Box, Typography , Button} from '@mui/material';
+import { Card, CardContent, TextField, Grid, IconButton, InputAdornment, Box, Typography, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import NightsStayIcon from '@mui/icons-material/NightsStay';
@@ -8,7 +8,7 @@ import WavesIcon from '@mui/icons-material/Waves';
 import OpacityIcon from '@mui/icons-material/Opacity';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import { app, auth, firestore } from '../../utils/firebase';
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import autumn from '../../assets/autumn.png'
 import temperature from '../../assets/temperature.png'
 import pressure from '../../assets/pressure.png'
@@ -20,34 +20,56 @@ const WeatherCard = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
 
+  const [favoriteCities, setFavoriteCities] = useState(() => {
+    const storedFavoriteCities = JSON.parse(localStorage.getItem('favoriteCities'));
+    return storedFavoriteCities || [];
+  });
+  console.log(favoriteCities)
+
+  useEffect(() => {
+    const storedFavoriteCities = JSON.parse(localStorage.getItem('favoriteCities'));
+    console.log(storedFavoriteCities)
+    if (storedFavoriteCities) {
+      setFavoriteCities(storedFavoriteCities);
+    }
+  }, []);
 
 
-
-  const db = firestore;
+  useEffect(() => {
+    localStorage.setItem('favoriteCities', JSON.stringify(favoriteCities));
+  }, [favoriteCities]);
 
   const toggleFavorite = () => {
-    const token = localStorage.getItem('token')
-    console.log(token)
-    if(token){
-
-       setIsFavorite(!isFavorite);
-
-    }
-    else{
+    const token = localStorage.getItem('token');
+    if (token) {
+      if (!favoriteCities.includes(city)) {
+        setIsFavorite(true);
+        setFavoriteCities(prevCities => {
+          const newCities = [...prevCities, city];
+          localStorage.setItem('favoriteCities', JSON.stringify(newCities)); // Update local storage here
+          return newCities;
+        });
+      } else {
+        alert('This city is already in your favorites!');
+      }
+    } else {
       const confirmed = window.confirm('Login to set Favorite City');
       if (confirmed) {
         navigate('/login');
       } else {
-        // Do nothing or handle the cancel action
         console.log('User cancelled.');
       }
-
     }
-
-    // updateFavoriteCity(city); // Call update function when favorite is toggled
   };
 
-   // Function to update favorite city in Firestore
+
+
+  useEffect(() => {
+    // Store favorite cities in localStorage
+    localStorage.setItem('favoriteCities', JSON.stringify(favoriteCities));
+  }, [favoriteCities]);
+
+  // Function to update favorite city in Firestore
   //  const updateFavoriteCity = async (city) => {
   //   try {
   //     // Set or update favorite city in Firestore
@@ -94,48 +116,48 @@ const WeatherCard = () => {
 
   return (
     <Grid container >
-    <Grid container spacing={2} >
-    <Grid item  xs={12} sm={3} >
-    <Button variant="contained" color={isFavorite ? "secondary" : "primary"} sx={{height:"54px" , mt:"16px", width:"100%", mb:""}} onClick={toggleFavorite}>
-          {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
-        </Button>
+      <Grid container spacing={2} >
+        <Grid item xs={12} sm={3} >
+          <Button variant="contained" color={isFavorite ? "secondary" : "secondary"} sx={{ height: "54px", mt: "16px", width: "100%", mb: "-12px" }} onClick={toggleFavorite}>
+            {isFavorite ? "Add to Favorites" : "Add to Favorites"}
+          </Button>
         </Grid>
         <Grid item xs={12} sm={9} >
-        <TextField
-        placeholder="Search"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton onClick={() => fetchWeatherData()}>
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-      />
+          <TextField
+            placeholder="Search"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={() => fetchWeatherData()}>
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
         </Grid>
 
-    </Grid>
+      </Grid>
 
       <Grid container spacing={3}>
         <Grid item xs={12}>
           {weatherData && (
-            <Card variant="outlined" sx={{ backgroundColor: "rgb(196,226,255)" }}>
+            <Card variant="outlined" sx={{ backgroundColor: "rgba(111,93,165 ,0.1)" }}>
               <CardContent sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-                <Box display={'flex'} justifyContent={"space-around"} gap={10} sx={{ marginBottom: 3 , marginTop: 5 }}>
+                <Box display={'flex'} justifyContent={"space-around"} gap={10} sx={{ marginBottom: 3, marginTop: 5 }}>
                   <Typography variant='h5'>{city}</Typography>
                   <Box display="flex" alignItems="center">
-                  <WbSunnyIcon />
+                    <WbSunnyIcon />
                     <Typography variant='h5'>{formatTime(weatherData.sys.sunrise)}</Typography>
 
                   </Box>
                   <Box display="flex" alignItems="center">
-                  <NightsStayIcon />
+                    <NightsStayIcon />
                     <Typography variant='h5'>{formatTime(weatherData.sys.sunset)}</Typography>
 
                   </Box>
@@ -160,9 +182,9 @@ const WeatherCard = () => {
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)", display:'flex',alignItems:'center' , justifyContent:'space-between'}}>
+          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <CardContent>
-              <h2 className="info-title" style={{display:'flex' ,flexWrap:'nowrap'}}><WavesIcon/> Wind</h2>
+              <h2 className="info-title" style={{ display: 'flex', flexWrap: 'nowrap' }}><WavesIcon /> Wind</h2>
               <p className="info-description">Today's Wind Speed</p>
               <h3 className="info-value">{weatherData?.wind?.speed} km/h</h3>
             </CardContent>
@@ -170,15 +192,15 @@ const WeatherCard = () => {
 
               <Box >
 
-              <img src={windSpeed} alt="" style={{width:'100px'}} />
+                <img src={windSpeed} alt="" style={{ width: '100px' }} />
               </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)" , display:'flex',alignItems:'center' , justifyContent:'space-between'}} >
+          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} >
             <CardContent>
-              <h2 className="info-title" style={{display:'flex' ,flexWrap:'nowrap'}}> <OpacityIcon/> Humidity</h2>
+              <h2 className="info-title" style={{ display: 'flex', flexWrap: 'nowrap' }}> <OpacityIcon /> Humidity</h2>
               <p className="info-description">Today's Humidity</p>
               <h3 className="info-value"> {weatherData?.main?.humidity}</h3>
             </CardContent>
@@ -186,15 +208,15 @@ const WeatherCard = () => {
 
               <Box >
 
-              <img src={autumn} alt="" style={{width:'100px'}} />
+                <img src={autumn} alt="" style={{ width: '100px' }} />
               </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)" , display:'flex',alignItems:'center' , justifyContent:'space-between'}}>
+          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <CardContent>
-              <h2 className="info-title" style={{display:'flex' ,flexWrap:'nowrap'}}><GrainIcon/> Pressure</h2>
+              <h2 className="info-title" style={{ display: 'flex', flexWrap: 'nowrap' }}><GrainIcon /> Pressure</h2>
               <p className="info-description">Today's Pressure</p>
               <h3 className="info-value"> {weatherData?.main?.pressure}</h3>
             </CardContent>
@@ -202,15 +224,15 @@ const WeatherCard = () => {
 
               <Box >
 
-              <img src={pressure} alt="" style={{width:'100px'}} />
+                <img src={pressure} alt="" style={{ width: '100px' }} />
               </Box>
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)" , display:'flex',alignItems:'center' , justifyContent:'space-between'}}>
+          <Card variant="outlined" sx={{ backgroundColor: "rgb(236,243,248)", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <CardContent>
-              <h2 className="info-title" style={{display:'flex' ,flexWrap:'nowrap'}}><ThermostatIcon /> Temperature </h2>
+              <h2 className="info-title" style={{ display: 'flex', flexWrap: 'nowrap' }}><ThermostatIcon /> Temperature </h2>
               <p className="info-description">Today's Temperature</p>
               <h3 className="info-value"> {weatherData?.main?.temp} K</h3>
             </CardContent>
@@ -218,7 +240,7 @@ const WeatherCard = () => {
 
               <Box >
 
-              <img src={temperature} alt="" style={{width:'100px'}} />
+                <img src={temperature} alt="" style={{ width: '100px' }} />
               </Box>
             </CardContent>
           </Card>
