@@ -12,6 +12,8 @@ import autumn from '../../assets/autumn.png';
 import temperature from '../../assets/temperature.png';
 import pressure from '../../assets/pressure.png';
 import windSpeed from '../../assets/windSpeed.png';
+import { useDispatch } from 'react-redux';
+import { setLatLon } from '../../Redux/weatherSlice';
 
 const WeatherCard = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -37,6 +39,7 @@ const WeatherCard = () => {
       if (response.ok) {
         const data = await response.json();
         setWeatherData(data);
+        extractLatLong();
       } else {
         console.error('Failed to fetch weather data:', response.statusText);
       }
@@ -89,6 +92,19 @@ const WeatherCard = () => {
 
   const temperatureInKelvin = weatherData?.main?.temp;
   const temperatureInCelsius = kelvinToCelsius(temperatureInKelvin);
+
+
+  const dispatch = useDispatch();
+
+  const extractLatLong = () => {
+    if (weatherData && weatherData.coord) {
+      const { lat, lon } = weatherData.coord;
+      dispatch(setLatLon({ lat, lon }));
+    }
+  };
+
+
+
 
   return (
     <Grid container >

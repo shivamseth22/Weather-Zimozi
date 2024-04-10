@@ -5,12 +5,16 @@ import { Air, AcUnit, LocalGasStation, Gesture, Whatshot, Cloud, FilterDrama, Wb
 const PollutionCard = () => {
   const [pollutionData, setPollutionData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const lat = useSelector(state => state.weather.lat) || 19.0760; // Default latitude for Mumbai
+  const lon = useSelector(state => state.weather.lon) || 72.8777; // Default longitude for Mumbai
+  
+
 
   useEffect(() => {
     const fetchPollutionData = async () => {
       try {
         const apiKey = '253d73606e710cae6490d42d78ec7102';
-        const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=40.7143&lon=-74.006&appid=${apiKey}`);
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
         const data = await response.json();
         setPollutionData(data);
         setLoading(false);
@@ -22,23 +26,9 @@ const PollutionCard = () => {
     fetchPollutionData();
   }, []);
 
-  const getAirQualityLevel = (aqi) => {
-    if (aqi <= 50) return 'Good';
-    else if (aqi <= 100) return 'Moderate';
-    else if (aqi <= 150) return 'Unhealthy for Sensitive Groups';
-    else if (aqi <= 200) return 'Unhealthy';
-    else if (aqi <= 300) return 'Very Unhealthy';
-    else return 'Hazardous';
-  };
 
-  const AQIRange = [
-    { min: 0, max: 50, color: 'green', quality: 'Good' },
-    { min: 51, max: 100, color: 'yellow', quality: 'Moderate' },
-    { min: 101, max: 150, color: 'orange', quality: 'Unhealthy for Sensitive Groups' },
-    { min: 151, max: 200, color: 'red', quality: 'Unhealthy' },
-    { min: 201, max: 300, color: 'purple', quality: 'Very Unhealthy' },
-    { min: 301, max: Infinity, color: 'maroon', quality: 'Hazardous' }
-  ];
+
+
 
   return (
     <div>

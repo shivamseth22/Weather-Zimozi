@@ -1,9 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import drawerReducer from './drawerSlice';
 
+import weatherReducer from './weatherSlice';
+
 const store = configureStore({
     reducer: {
-        drawer: drawerReducer
+        drawer: drawerReducer,
+        weather: weatherReducer,
     }
 });
 
