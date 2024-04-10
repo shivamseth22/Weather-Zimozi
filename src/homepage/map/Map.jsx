@@ -2,55 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import GoogleMapReact from 'google-map-react';
 import Marker from './Marker'; // Create Marker component to show AQI
+import { centroids } from './centroids'; // Import centroids data
 
 const Map = () => {
   const [aqiData, setAqiData] = useState([]);
 
   useEffect(() => {
-    const fetchAirQualityData = async (latitude, longitude) => {
-      const apiUrl = `https://api.waqi.info/feed/geo:${latitude};${longitude}/?token=b10b8640288150514efccae0eea2acf2c92a8aae`;
+    // Example air quality data for each centroid
+    const aqiData = centroids.map((centroid, index) => ({
+      city: {
+        geo: [centroid.Latitude, centroid.Longitude], // Latitude and longitude from centroid
+      },
+      aqi: Math.floor(Math.random() * 500) + 1, // Example random AQI value (1-500)
+    }));
 
-      try {
-        const response = await fetch(apiUrl);
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch air quality data');
-        }
-
-        const data = await response.json();
-        if (data.status === 'ok') {
-          setAqiData(data.data);
-        } else {
-          throw new Error('Failed to fetch air quality data: ' + data.message);
-        }
-      } catch (error) {
-        console.error('Error fetching air quality data:', error);
-        setAqiData([]); // Set aqiData to an empty array in case of error
-      }
-    };
-
-    // Example location - New Delhi, India
-    fetchAirQualityData(28.6139, 77.2090);
-
-    // Fetch AQI for Shanghai
-    const fetchShanghaiAQI = async () => {
-      const shanghaiUrl = "http://api.waqi.info/feed/shanghai/?token=ad6933b2-5ab9-4d67-bbb9-f757655fcc6d";
-
-      try {
-        const response = await fetch(shanghaiUrl);
-        const data = await response.json();
-
-        if (data.status === 'ok') {
-          setAqiData(prevData => [...prevData, data.data]);
-        } else {
-          throw new Error('Failed to fetch Shanghai AQI data: ' + data.message);
-        }
-      } catch (error) {
-        console.error('Error fetching Shanghai AQI data:', error);
-      }
-    };
-
-    fetchShanghaiAQI();
+    // Set the data
+    setAqiData(aqiData);
   }, []);
 
   return (
@@ -58,11 +25,11 @@ const Map = () => {
       <Grid item xs={12}>
         <div style={{ height: '100%', width: '100%' }}>
           <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyAgTKEHC_7hdQeAIh27JkGzIBhpOVLKtZs' }} // Use provided Google Maps API key
-            defaultCenter={{ lat: 28.6139, lng: 77.2090 }} // Set default center to New Delhi, India
+            bootstrapURLKeys={{ key: 'AIzaSyAgTKEHC_7hdQeAIh27JkGzIBhpOVLKtZs' }} // Replace 'YOUR_GOOGLE_MAPS_API_KEY' with your actual API key
+            defaultCenter={{ lat: 20.5937, lng: 78.9629 }} // Set default center to India
             defaultZoom={5} // Set default zoom level of the map
           >
-            {Array.isArray(aqiData) && aqiData.map((cityData, index) => (
+            {aqiData.map((cityData, index) => (
               <Marker
                 key={index}
                 lat={cityData.city.geo[0]}
@@ -71,7 +38,6 @@ const Map = () => {
               />
             ))}
           </GoogleMapReact>
-
         </div>
       </Grid>
     </Grid>
