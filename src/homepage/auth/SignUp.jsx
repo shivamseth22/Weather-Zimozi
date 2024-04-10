@@ -42,7 +42,6 @@ const SignUp = () => {
   .then((userCredential) => {
     // Signed up
     const user = userCredential.user;
-    alert("sihvam")
     navigate('/login')
     console.log(user)
     // ...
@@ -61,7 +60,7 @@ const SignUp = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      height="100vh" // Adjust as needed
+      height="80vh" // Adjust as needed
     >
       <StyledCard>
         <CardContent>

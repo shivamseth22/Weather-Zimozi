@@ -62,7 +62,7 @@ const Login = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      minHeight="100vh" // Set a minimum height
+      minHeight="80vh" // Set a minimum height
     >
       <StyledCard>
         <CardContent>

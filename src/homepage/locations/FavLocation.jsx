@@ -19,10 +19,10 @@ const FavLocation = ({ location }) => {
 
   if (!tokenPresent) {
     return (
-      <Card>
+      <Card sx={{backgroundColor:'rgba(111,93,165 ,0.1)' , marginTop:'20px'}} >
         <CardContent>
-          <Typography variant="h5" component="div">
-            Please log in to view favorite cities.
+          <Typography variant="h5" component="div"  textAlign={'center'}  >
+            Please Log in to view Favorite Cities.
           </Typography>
         </CardContent>
       </Card>

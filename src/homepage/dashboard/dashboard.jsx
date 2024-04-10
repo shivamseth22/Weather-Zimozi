@@ -6,12 +6,8 @@ import PollutionCard from './PollutionCard';
 
 const dashboard = () => {
 
-
-  const isOpen = useSelector(state => state.drawer.isOpen);
-
-
   return (
-    <Grid container spacing={2} >
+    <Grid container spacing={2}  >
       <Grid item xs={12} md={8}>
         <WeatherCard />
       </Grid>

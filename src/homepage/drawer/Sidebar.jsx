@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   AppBar,
   Toolbar,
   IconButton,
@@ -47,9 +48,19 @@ const Sidebar = () => {
             <MenuIcon color="black" />
           </IconButton>
           <div style={{ flexGrow: 1 }}></div>
-          <IconButton color="default">
-            <LoginIcon />
-          </IconButton>
+          {localStorage.getItem('token') ?
+            <Box onClick={() => {localStorage.removeItem('token'), navigate('/')  }}>
+              <IconButton color="default">
+                {"Logout"}
+                <LoginIcon />
+              </IconButton>
+            </Box> :
+            <Box onClick={() => navigate('/login')}>
+              <IconButton color="default">
+                {"Login"}
+                <LoginIcon />
+              </IconButton>
+            </Box>}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -108,7 +119,7 @@ const Sidebar = () => {
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
-              <ListItemText primary={t('ForeCast')} /> {/* Translate text */}
+              <ListItemText primary={t('Forecast')} /> {/* Translate text */}
             </ListItem>
             <ListItem
               button
@@ -125,19 +136,35 @@ const Sidebar = () => {
           </List>
         </div>
         <List sx={{ marginTop: 'auto' }}>
-          <ListItem
-            button
-            onClick={() => { localStorage.removeItem('token')
-              navigate('/');
-              handleToggleDrawer();
+          {localStorage.getItem('token') ?
+            <ListItem
+              button
+              onClick={() => {
+                localStorage.removeItem('token')
+                navigate('/');
+                handleToggleDrawer();
+              }}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} /> {/* Translate text */}
+            </ListItem> :
+            <ListItem
+              button
+              onClick={() => {
+                localStorage.removeItem('token')
+                navigate('/login');
+                handleToggleDrawer();
+              }}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Login"} /> {/* Translate text */}
+            </ListItem>
+          }
 
-            }}
-          >
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Logout')} /> {/* Translate text */}
-          </ListItem>
         </List>
       </Drawer>
     </div>

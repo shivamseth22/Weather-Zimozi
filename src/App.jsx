@@ -1,34 +1,32 @@
+import React, { Suspense, lazy } from "react";
 import { createBrowserRouter, Outlet, useLocation } from "react-router-dom";
-import Dashboard from "./homepage/dashboard/dashboard";
 import { Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from "./Redux/store";
 import Sidebar from "./homepage/drawer/Sidebar";
-import Login from "./homepage/auth/Login";
-import SignUp from "./homepage/auth/SignUp";
-import Map from "./homepage/map/Map";
-import Setting from "./homepage/settings/setting";
-import Forecast from "./homepage/forecast/Forecast";
-import FavLocation from "./homepage/locations/FavLocation";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./homepage/i18n";
+
+const Dashboard = lazy(() => import("./homepage/dashboard/dashboard"));
+const Login = lazy(() => import("./homepage/auth/Login"));
+const SignUp = lazy(() => import("./homepage/auth/SignUp"));
+const Map = lazy(() => import("./homepage/map/Map"));
+const Setting = lazy(() => import("./homepage/settings/setting"));
+const Forecast = lazy(() => import("./homepage/forecast/Forecast"));
+const FavLocation = lazy(() => import("./homepage/locations/FavLocation"));
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      // {
-      //   path: "/login",
-      //   element: <Navigate to="/login" />, // Redirect to login page by default
-      // },
       {
         path: "/login",
-        element: <Login />, // Render the login page component
+        element: <Login />,
       },
       {
         path: "/signup",
-        element: <SignUp />, // Render the login page component
+        element: <SignUp />,
       },
       {
         path: "/",
@@ -52,17 +50,18 @@ export const router = createBrowserRouter([
       },
     ]
   },
-])
+]);
 
 function App() {
   return (
-<I18nextProvider i18n={i18n}>
+    <I18nextProvider i18n={i18n}>
       <Provider store={store}>
-         <Sidebar />
-        <Outlet />
+        <Sidebar />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Outlet />
+        </Suspense>
       </Provider>
-      </I18nextProvider>
-
+    </I18nextProvider>
   );
 }
 
